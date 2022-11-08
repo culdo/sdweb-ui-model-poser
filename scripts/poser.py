@@ -9,6 +9,7 @@ import modules.ldsr_model
 import modules.scripts
 import modules.shared as shared
 import modules.styles
+import modules.img2img
 import modules.textual_inversion.ui
 import modules.textual_inversion.ui
 from modules import script_callbacks
@@ -41,11 +42,12 @@ def on_ui_tabs():
         with gr.Row().style(equal_height=False):
             with gr.Column(variant='panel'):
 
-                with gr.Tabs(elem_id="mode_img2img") as tabs_img2img_mode:
-                    with gr.TabItem('img2img', id='img2img'):
+                with gr.Tabs(elem_id="mode_model2img") as tabs_img2img_mode:
+                    with gr.TabItem('model2image', id='img2img'):
                         init_img = gr.Image(label="Image for img2img", elem_id="img2img_image", show_label=False,
-                                            source="upload", interactive=True, type="pil",
-                                            tool=cmd_opts.gradio_img2img_tool).style(height=480)
+                                            source="canvas", interactive=True, type="pil",
+                                            tool="color-sketch", visible=False).style(height=480)
+                        gr.HTML(value="<div id='threejs_canvas' style='height: 480px;'></div>", visible=True)
 
                     with gr.TabItem('Inpaint', id='inpaint'):
                         init_img_with_mask = gr.Image(label="Image for inpainting with mask", show_label=False,
@@ -151,7 +153,7 @@ def on_ui_tabs():
 
             img2img_args = dict(
                 fn=wrap_gradio_gpu_call(modules.img2img.img2img),
-                _js="submit_img2img",
+                _js="submit_model2img",
                 inputs=[
                            dummy_component,
                            img2img_prompt,
@@ -264,7 +266,7 @@ def on_ui_tabs():
             ]
             parameters_copypaste.add_paste_fields("img2img", init_img, img2img_paste_fields)
             parameters_copypaste.add_paste_fields("inpaint", init_img_with_mask, img2img_paste_fields)
-    return (poser, "3d poser", "3d poser"),
+    return (poser, "3D Poser", "3d_poser"),
 
 
 script_callbacks.on_ui_tabs(on_ui_tabs)
